@@ -6,17 +6,13 @@ import (
 	"errors"
 )
 
-// Conversion houses various built in conversion transforms (XML, JSON, CSV)
 type Conversion struct {
 }
 
-// NewConversion creates, initializes and returns a new instance of Conversion
 func NewConversion() Conversion {
 	return Conversion{}
 }
 
-// TransformToXML transforms an EdgeX event to XML.
-// It will return an error and stop the pipeline if a non-edgex event is received or if no data is received.
 func (f Conversion) TransformToXML(params ...interface{}) (continuePipeline bool, stringType interface{}) {
 	if len(params) < 1 {
 		return false, errors.New("No msg Received")
@@ -32,8 +28,6 @@ func (f Conversion) TransformToXML(params ...interface{}) (continuePipeline bool
 	return false, errors.New("Unexpected type received")
 }
 
-// TransformToJSON transforms an EdgeX event to JSON.
-// It will return an error and stop the pipeline if a non-edgex event is received or if no data is received.
 func (f Conversion) TransformToJSON(params ...interface{}) (continuePipeline bool, stringType interface{}) {
 	if len(params) < 1 {
 		return false, errors.New("No msg Received")
