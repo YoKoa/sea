@@ -12,7 +12,7 @@ func (filter *Filter) FilterBySH(filterValue...interface{})(bool, interface{}){
 
 func ExampleFilter(f []string) func(...interface{}) (bool, interface{}) {
 	transforms := Filter{
-		FilterValues: deviceNames,
+		FilterValues: f,
 	}
 	return transforms.FilterBySH
 }

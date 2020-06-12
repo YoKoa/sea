@@ -11,7 +11,7 @@ func main() {
 	// 1) First thing to do is to create an workflow and initialize it.
 	wf := workflow.Flow{
 		ServiceKey: "example",
-		TargetType: []byte{},
+		TargetType: []byte{}, // TODO Serialized data format
 	}
 	wf.Initialize()
 
