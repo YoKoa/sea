@@ -10,8 +10,8 @@ import (
 
 const readEvent = unix.EPOLLIN | unix.EPOLLPRI
 const writeEvent = unix.EPOLLOUT
-var wakeBytes = []byte{1, 0, 0, 0, 0, 0, 0, 0}
 
+var wakeBytes = []byte{1, 0, 0, 0, 0, 0, 0, 0}
 
 type Poller struct {
 	fd       int
@@ -26,7 +26,7 @@ func Create() (*Poller, error) {
 		return nil, err
 	}
 
-	r0, _, errno := unix.Syscall(unix.SYS_EVENTFD2, 0, unix.EFD_NONBLOCK | unix.EFD_CLOEXEC, 0)
+	r0, _, errno := unix.Syscall(unix.SYS_EVENTFD2, 0, unix.EFD_NONBLOCK|unix.EFD_CLOEXEC, 0)
 	if errno != 0 {
 		return nil, errno
 	}
@@ -81,8 +81,6 @@ func (ep *Poller) Close() (err error) {
 	return
 }
 
-
-// TODO ADD
 func (ep *Poller) add(fd int, events uint32) error {
 	return unix.EpollCtl(ep.fd, unix.EPOLL_CTL_ADD, fd, &unix.EpollEvent{
 		Events: events,
@@ -94,12 +92,10 @@ func (ep *Poller) AddRead(fd int) error {
 	return ep.add(fd, readEvent)
 }
 
-// AddWrite 注册fd到epoll，并注册可写事件
 func (ep *Poller) AddWrite(fd int) error {
 	return ep.add(fd, writeEvent)
 }
 
-// Del 从epoll中删除fd
 func (ep *Poller) Del(fd int) error {
 	return unix.EpollCtl(ep.fd, unix.EPOLL_CTL_DEL, fd, nil)
 }
@@ -111,23 +107,18 @@ func (ep *Poller) mod(fd int, events uint32) error {
 	})
 }
 
-// EnableReadWrite 修改fd注册事件为可读可写事件
 func (ep *Poller) EnableReadWrite(fd int) error {
 	return ep.mod(fd, readEvent|writeEvent)
 }
 
-// EnableWrite 修改fd注册事件为可写事件
 func (ep *Poller) EnableWrite(fd int) error {
 	return ep.mod(fd, writeEvent)
 }
 
-// EnableRead 修改fd注册事件为可读事件
 func (ep *Poller) EnableRead(fd int) error {
 	return ep.mod(fd, readEvent)
 }
 
-
-// Poll 启动 epoll wait 循环
 func (ep *Poller) Poll(handler func(fd int, event Event)) {
 	defer func() {
 		close(ep.waitDone)
