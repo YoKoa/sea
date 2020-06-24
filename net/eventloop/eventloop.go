@@ -45,18 +45,17 @@ func (el *EventLoop) Run(network, address string) {
 	}
 	file, err := l.File()
 	if err != nil {
-		panic("could not get file descriptor 2")
+		panic(err)
 	}
 	fd := int(file.Fd())
 	if err = unix.SetNonblock(fd, true); err != nil {
-		panic("could not get file descriptor 3")
+		panic(err)
 	}
 	err = el.AddSocketAndEnableRead(fd, tcp.Connection{
 		Fd: fd,
 	})
 	if err != nil {
 		panic(err)
-
 	}
 	// 开始wait
 	el.poll.Poll(func(fd int, event core.Event) {
